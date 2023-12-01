@@ -21,6 +21,8 @@ services:
   ghost-proxy:
     image: ghostcms-web
     build: nginx
+    environment:
+      NODE_ENV: production
     ports:
       - "8080:80"
 
