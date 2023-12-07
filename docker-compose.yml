@@ -30,7 +30,7 @@ services:
     image: "ghost-mysql:8.2"
     build: mysql
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: yes
+      MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: ghost
       MYSQL_USER: ghost
       MYSQL_PASSWORD: ghostpassword
@@ -44,10 +44,10 @@ services:
     image: "ghost-mysql:8.2"
     build: mysql
     environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: yes
-      MYSQL_DATABASE: ghost
-      MYSQL_USER: ghost
-      MYSQL_PASSWORD: ghostpassword
+      MYSQL_ROOT_PASSWORD: rootpassword
+#      MYSQL_DATABASE: ghost
+#      MYSQL_USER: ghost
+#      MYSQL_PASSWORD: ghostpassword
       # Role must be assiged to slave
       MYSQL_ROLE: slave
     volumes:

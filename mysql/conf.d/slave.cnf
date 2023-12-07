@@ -1,0 +1,4 @@
+[mysqld]
+# Each node must have a different server ID
+server-id = 2
+log_bin = slave-bin

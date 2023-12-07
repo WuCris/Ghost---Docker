@@ -1,0 +1,4 @@
+[mysqld]
+# Master node required to be 1
+server-id = 1
+log_bin = master-bin
