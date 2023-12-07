@@ -1,4 +1,7 @@
 [mysqld]
 # Master node required to be 1
 server-id = 1
-log_bin = master-bin
+log_bin = /var/log/mysql/binlog
+max_binlog_size = 100M
+#innodb_flush_log_at_trx_commit=1
+#sync_binlog

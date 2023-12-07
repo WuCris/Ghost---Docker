@@ -38,6 +38,7 @@ services:
       MYSQL_ROLE: master
     volumes:
       - ghost-db-master:/var/lib/mysql
+      - ghost-temp-db:/tmp/mysql-backup
 
   ghost-db-slave:
     # We use the same custom image
@@ -52,9 +53,11 @@ services:
       MYSQL_ROLE: slave
     volumes:
       - ghost-db-slave:/var/lib/mysql
+      - ghost-temp-db:/tmp/mysql-backup
     depends_on:
       - ghost-db-master
 
 volumes:
     ghost-db-master:
     ghost-db-slave:
+    ghost-temp-db:
