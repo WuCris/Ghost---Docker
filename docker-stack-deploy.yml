@@ -1,0 +1,92 @@
+version: "3"
+
+services:
+  ghost:
+    image: "ghost:5.74"
+    hostname: ghost
+    environment:
+      # see https://ghost.org/docs/config/#configuration-options
+      database__client: mysql
+      database__connection__host: ghost-db-master
+      database__connection__user: ghost
+      database__connection__password: ghostpassword
+      database__connection__database: ghost
+      # this url value is just an example, and is likely wrong for your environment!
+      url: http://localhost:8080
+      # contrary to the default mentioned in the linked documentation, this image defaults to NODE_ENV=production (so development mode needs to be explicitly specified if desired)
+      NODE_ENV: production
+    deploy:
+      replicas: 3
+      placement:
+        max_replicas_per_node: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: any
+      endpoint_mode: dnsrr
+    restart: always
+    depends_on:
+      - ghost-db-master
+
+  ghost-web:
+    image: "harbor.lan:443/ghost/ghost-web:nginx-1.25-alpine"
+    hostname: ghost-web
+    build: nginx
+    environment:
+      NODE_ENV: production
+    networks:
+      - default
+      - nginx-lb
+    deploy:
+      replicas: 2
+      placement:
+        max_replicas_per_node: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: any
+      endpoint_mode: dnsrr
+    restart: always
+    ports:
+      - "8080:80"
+
+  ghost-db-master:
+    image: "harbor.lan:443/ghost/ghost-db:mysql-8.2"
+    image: "ghost-mysql:8.2"
+    hostname: ghost-db-master
+    build: mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: ghost
+      MYSQL_USER: ghost
+      MYSQL_PASSWORD: ghostpassword
+      # The master node cannot be replicated.
+      MYSQL_ROLE: master
+    deploy:
+      # We cannot easily replicate master
+      replicas: 1
+      placement:
+        max_replicas_per_node: 1
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: any
+      endpoint_mode: dnsrr
+    restart: always
+    volumes:
+      - ghost-db-master:/var/lib/mysql
+      - ghost-temp-db:/tmp/mysql-backup
+
+volumes:
+    ghost-db-master:
+    ghost-db-slave:
+    ghost-temp-db:
+
+networks:
+  default:
+  nginx-lb:
+    name: nginx-lb
+    external: true
