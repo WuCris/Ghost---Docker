@@ -54,7 +54,6 @@ services:
 
   ghost-db-master:
     image: "harbor.lan:443/ghost/ghost-db:mysql-8.2"
-    image: "ghost-mysql:8.2"
     hostname: ghost-db-master
     build: mysql
     environment:
